@@ -33,7 +33,7 @@ function App() {
           isValid=parsedData.every(row => 
             'date' in row && 'product' in row && 'quantity' in row && 'revenue' in row
           )
-          //type checking for each entry (specifics later?)
+          //type checking for each entry
           for (let i = 0; i < parsedData.length; i++) {
             const row = parsedData[i]
             
@@ -75,26 +75,28 @@ function App() {
 
   function displayData() {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Revenue</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, i) => (
-            <tr key={i}>
-              <td>{row.date}</td>
-              <td>{row.product}</td>
-              <td>{row.quantity}</td>
-              <td>{row.revenue}</td>
+      <div>
+        <table className = "table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Revenue</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((row, i) => (
+              <tr key={i}>
+                <td>{row.date}</td>
+                <td>{row.product}</td>
+                <td>{row.quantity}</td>
+                <td>${row.revenue}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     )
   }
 
@@ -105,7 +107,7 @@ function App() {
     const numTransactions = data.length;
 
     return (
-      <div className="card">
+      <div className="extras">
         <p>Total Revenue: ${totalRevenue}</p>
         <p>Total Quantity Sold: {totalQuantity}</p>
         <p>Number of Transactions: {numTransactions}</p>
@@ -128,7 +130,7 @@ function App() {
     }
 
     return (
-      <div className="card">
+      <div className="revenues">
         <RevenueChart data={elements} />
       </div>
     )
@@ -150,7 +152,7 @@ function App() {
         
         {invalid && (
           <div className="error">
-            File format is invalid. Make sure it has columns: date, product, quantity, revenue.
+            File format is invalid. Make sure it is a CSV file with columns: date, product, quantity, revenue.
           </div>
         )}
       </div>
@@ -158,13 +160,13 @@ function App() {
       {data.length > 0 && (
         <div>
           {displayData()}
-          <p>Additional Information:</p>
+          <p>Cumulative information:</p>
           {displayInfo()}
           <p>Revenue by Product:</p>
           {displayRevenues()}
         </div>
       )}
-      <input type="file" accept=".csv" onChange={handleFileSelect} />
+      <input type="file" accept=".csv" onChange={handleFileSelect} className="selector" />
       {!invalid && (
           <div>
             Please upload a CSV file for new data!

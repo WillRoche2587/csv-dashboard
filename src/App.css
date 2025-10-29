@@ -5,41 +5,40 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.table {
+  width: 100%;
+  text-align: center;
+  margin: 1rem auto;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.table th, .table td {
+  padding: 1rem;
+  border: 1px solid white;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.extras {
+  text-align: center;
+  border: 1px solid white;
+  padding: 2rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.revenues{
+  text-align: center;
+  border: 1px solid white;
+  padding: 2rem;
 }
 
 .card {
   text-align: center;
 }
+
 .error {
   color: red;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.selector {
+  padding: 2rem;
 }
