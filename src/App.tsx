@@ -3,8 +3,6 @@ import Papa from 'papaparse'
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis} from 'recharts';
 
-
-//typing, assumes csv file is formatted properly
 type SalesData = {
   date: string
   product: string
@@ -144,6 +142,37 @@ function App() {
     </BarChart>
   )
 }
+  function displayQuantities() {
+    const quantityByProduct: { [product: string]: number } = {}
+
+    for (const row of data) {
+      if (!quantityByProduct[row.product]) {
+        quantityByProduct[row.product] = 0
+      }
+      quantityByProduct[row.product] += row.quantity
+    }
+
+    const elements = Object.entries(quantityByProduct).map(([product, quantity]) => ({
+      product,
+      quantity,
+    }))
+
+    return (
+      <div className="quantities">
+        <QuantityChart data={elements} />
+      </div>
+    )
+  }
+
+  function QuantityChart({ data }: { data: { product: string; quantity: number }[] }) {
+    return (
+      <BarChart width={500} height={300} data={data}>
+        <XAxis dataKey="product" />
+        <YAxis />
+        <Bar dataKey="quantity" fill="steelblue" />
+      </BarChart>
+    )
+  }
 
   return (
     <>
@@ -152,18 +181,20 @@ function App() {
         
         {invalid && (
           <div className="error">
-            File format is invalid. Make sure it is a CSV file with columns: date, product, quantity, revenue.
+            Sorry, this file format is invalid. Make sure it is a CSV file with columns: date, product, quantity, revenue.
           </div>
         )}
       </div>
-      {/* will only show when data is populated */}
-      {data.length > 0 && (
+      
+      {!invalid && data.length > 0 && (
         <div>
           {displayData()}
-          <p>Cumulative information:</p>
+          <p>Statistics:</p>
           {displayInfo()}
           <p>Revenue by Product:</p>
           {displayRevenues()}
+          <p>Quantity sold by Product:</p>
+          {displayQuantities()}
         </div>
       )}
       <input type="file" accept=".csv" onChange={handleFileSelect} className="selector" />

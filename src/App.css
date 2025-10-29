@@ -21,11 +21,22 @@
   padding: 2rem;
 }
 
-.revenues{
+.extras p{
   text-align: center;
   border: 1px solid white;
   padding: 2rem;
 }
+
+.revenues{
+  text-align: center;
+  border: 1px solid white;
+}
+
+.quantities{
+  text-align: center;
+  border: 1px solid white;
+}
+
 
 .card {
   text-align: center;
