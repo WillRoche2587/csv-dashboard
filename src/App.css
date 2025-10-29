@@ -40,5 +40,13 @@
 }
 
 .selector {
-  padding: 2rem;
+  font-size: 1rem;
+  background-color: grey;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+.selector::file-selector-button {
+  background-color: green;
+  color: black;
 }
