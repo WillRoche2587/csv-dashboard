@@ -1,6 +1,8 @@
 import './App.css'
 import Papa from 'papaparse'
 import { useState } from 'react'
+import { BarChart, Bar, XAxis, YAxis} from 'recharts';
+
 
 //typing, assumes csv file is formatted properly
 type SalesData = {
@@ -127,14 +129,19 @@ function App() {
 
     return (
       <div className="card">
-        {elements.map(item => (
-          <p key={item.product}>
-            {item.product}: ${item.revenue}
-          </p>
-        ))}
+        <RevenueChart data={elements} />
       </div>
     )
   }
+  function RevenueChart({ data }: { data: { product: string; revenue: number }[] }) {
+  return (
+    <BarChart width={500} height={300} data={data}>
+      <XAxis dataKey="product" />
+      <YAxis tickFormatter={v => `$${v}`}/>
+      <Bar dataKey="revenue" fill="green" />
+    </BarChart>
+  )
+}
 
   return (
     <>
