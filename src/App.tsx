@@ -12,6 +12,7 @@ type SalesData = {
 
 function App() {
   const [data, setData] = useState<SalesData[]>([])
+  const [invalid, setInvalid] = useState(false) // just a boolean flag
   
   //csv file parsing, using papaparse
 
@@ -24,7 +25,45 @@ function App() {
         dynamicTyping: true,
         skipEmptyLines: true,
         complete: (results) => {
-          setData(results.data as SalesData[])
+          const parsedData = results.data as any[]
+          let isValid = true
+          // Basic format check
+          isValid=parsedData.every(row => 
+            'date' in row && 'product' in row && 'quantity' in row && 'revenue' in row
+          )
+          //type checking for each entry (specifics later?)
+          for (let i = 0; i < parsedData.length; i++) {
+            const row = parsedData[i]
+            
+            if (typeof row.date !== 'string') {
+              isValid=false
+              break
+            }
+
+            if (typeof row.product !== 'string') {
+              isValid=false
+              break
+            }
+
+            if (!Number.isInteger(row.quantity) || !(row.quantity >= 0)) {
+              isValid=false
+              break
+            }
+
+            if (typeof row.revenue !== 'number') {
+              isValid=false
+              break
+            }
+          }
+
+          if (!isValid) {
+          setInvalid(true)
+          setData([]) // clear any previously loaded data
+          return
+        }
+
+        setInvalid(false)
+        setData(parsedData as SalesData[])
         }
       })
     }
@@ -57,20 +96,73 @@ function App() {
     )
   }
 
+  
+  function displayInfo() {
+    const totalRevenue = data.reduce((sum, cur) => sum + cur.revenue, 0);
+    const totalQuantity = data.reduce((sum, cur) => sum + cur.quantity, 0);
+    const numTransactions = data.length;
+
+    return (
+      <div className="card">
+        <p>Total Revenue: ${totalRevenue}</p>
+        <p>Total Quantity Sold: {totalQuantity}</p>
+        <p>Number of Transactions: {numTransactions}</p>
+      </div>
+    )
+  }
+
+  function displayRevenues() {
+    const revenueByProduct: { [product: string]: number } = {}
+
+    for (const row of data) {
+      if (!revenueByProduct[row.product]) {
+        revenueByProduct[row.product] = 0
+      }
+      revenueByProduct[row.product] += row.revenue
+    }
+    const elements = []
+    for (const product in revenueByProduct) {
+      elements.push({ product: product, revenue: revenueByProduct[product] })
+    }
+
+    return (
+      <div className="card">
+        {elements.map(item => (
+          <p key={item.product}>
+            {item.product}: ${item.revenue}
+          </p>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <>
       <h1>Arpari Parse!</h1>
       <div className="card">
-        <input type="file" accept=".csv" onChange={handleFileSelect} />
-        <p>Please upload your file above!</p>
+        
+        {invalid && (
+          <div className="error">
+            File format is invalid. Make sure it has columns: date, product, quantity, revenue.
+          </div>
+        )}
       </div>
       {/* will only show when data is populated */}
       {data.length > 0 && (
         <div>
           {displayData()}
+          <p>Additional Information:</p>
+          {displayInfo()}
+          <p>Revenue by Product:</p>
+          {displayRevenues()}
         </div>
       )}
+      <input type="file" accept=".csv" onChange={handleFileSelect} />
+      {!invalid && (
+          <div>
+            Please upload a CSV file for new data!
+          </div>
+        )}
     </>
   )
 }

@@ -36,6 +36,9 @@
 .card {
   text-align: center;
 }
+.error {
+  color: red;
+}
 
 .read-the-docs {
   color: #888;
