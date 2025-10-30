@@ -11,23 +11,30 @@ type SalesData = {
 }
 
 function App() {
-  const [data, setData] = useState<SalesData[]>([])
-  const [invalid, setInvalid] = useState(false) // just a boolean flag
+  const [data, setData] = useState<SalesData[]>([]) //parsed csv data as array of salesdata objects
+  const [invalid, setInvalid] = useState(false) // boolean flag for validity
   
   //csv file parsing, using papaparse
 
   function handleFileSelect(event: React.ChangeEvent<HTMLInputElement>): void {
+    //retrieves first file user selected
     const file = event.target.files?.[0]
-    //add check for formatting validity
+    //uses papaparse on the given file
     if (file) {
       Papa.parse(file, {
+        //date, product, quantity, and revenue headers from first line
         header: true,
+        //interprets type from file data
         dynamicTyping: true,
+        //skips any empty lines
         skipEmptyLines: true,
+        //data handling
         complete: (results) => {
+          //initially store each row as 'any' to avoid type errors
           const parsedData = results.data as any[]
+          //local var to check if results is valid
           let isValid = true
-          // Basic format check
+          // header format check
           isValid=parsedData.every(row => 
             'date' in row && 'product' in row && 'quantity' in row && 'revenue' in row
           )
@@ -44,7 +51,7 @@ function App() {
               isValid=false
               break
             }
-
+            //assumes quantity cant be negative
             if (!Number.isInteger(row.quantity) || !(row.quantity >= 0)) {
               isValid=false
               break
@@ -55,13 +62,14 @@ function App() {
               break
             }
           }
-
+          //case where file was incorrect, clears data state variable
           if (!isValid) {
           setInvalid(true)
-          setData([]) // clear any previously loaded data
+          setData([]) //
           return
         }
-
+        //we know parsedDate is of form salesdata
+        //so we can now have it stored as such
         setInvalid(false)
         setData(parsedData as SalesData[])
         }
@@ -70,7 +78,6 @@ function App() {
   }
 
   //display data using table for readability
-
   function displayData() {
     return (
       <div>
@@ -84,6 +91,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
+            {/*creates table row for each item in data, and table data for each cell*/}
             {data.map((row, i) => (
               <tr key={i}>
                 <td>{row.date}</td>
@@ -98,10 +106,12 @@ function App() {
     )
   }
 
-  
+  //displays required statistics
   function displayInfo() {
+    //sums revenue and quantity field of each row
     const totalRevenue = data.reduce((sum, cur) => sum + cur.revenue, 0);
     const totalQuantity = data.reduce((sum, cur) => sum + cur.quantity, 0);
+    //number of transactions is simply length of data
     const numTransactions = data.length;
 
     return (
@@ -114,14 +124,17 @@ function App() {
   }
 
   function displayRevenues() {
+    //dictionary with product as key and revenue as value
     const revenueByProduct: { [product: string]: number } = {}
-
+    //if new product, initializes revenue value to 0
+    //adds the revenue of each row to the product for that row
     for (const row of data) {
       if (!revenueByProduct[row.product]) {
         revenueByProduct[row.product] = 0
       }
       revenueByProduct[row.product] += row.revenue
     }
+    //create array of product/revenue objects to use for chart
     const elements = []
     for (const product in revenueByProduct) {
       elements.push({ product: product, revenue: revenueByProduct[product] })
@@ -133,18 +146,22 @@ function App() {
       </div>
     )
   }
+  //takes the revenue/product objects and displays them using recharts
   function RevenueChart({ data }: { data: { product: string; revenue: number }[] }) {
   return (
     <BarChart width={500} height={300} data={data}>
-      <XAxis dataKey="product" />
-      <YAxis tickFormatter={v => `$${v}`}/>
+      <XAxis dataKey="product" stroke="white"/>
+      <YAxis tickFormatter={v => `$${v}`} stroke="white"/>
       <Bar dataKey="revenue" fill="green" />
     </BarChart>
   )
 }
   function displayQuantities() {
+    //identical logic to the above displayrevenues
+    //instead for dictionary with key product and value quantity
     const quantityByProduct: { [product: string]: number } = {}
 
+    //again, remaining code is largely identical, just mapped to quantities
     for (const row of data) {
       if (!quantityByProduct[row.product]) {
         quantityByProduct[row.product] = 0
@@ -152,10 +169,11 @@ function App() {
       quantityByProduct[row.product] += row.quantity
     }
 
-    const elements = Object.entries(quantityByProduct).map(([product, quantity]) => ({
-      product,
-      quantity,
-    }))
+    const elements =[]
+
+    for (const product in quantityByProduct) {
+      elements.push({ product: product, quantity: quantityByProduct[product] })
+    }
 
     return (
       <div className="quantities">
@@ -163,13 +181,13 @@ function App() {
       </div>
     )
   }
-
+  //takes the quantities/products and displays them with rechart
   function QuantityChart({ data }: { data: { product: string; quantity: number }[] }) {
     return (
       <BarChart width={500} height={300} data={data}>
-        <XAxis dataKey="product" />
-        <YAxis />
-        <Bar dataKey="quantity" fill="steelblue" />
+        <XAxis dataKey="product" stroke="white"/>
+        <YAxis stroke="white"/>
+        <Bar dataKey="quantity" fill="green" />
       </BarChart>
     )
   }
@@ -178,14 +196,16 @@ function App() {
     <>
       <h1>Arpari Parse!</h1>
       <div className="card">
-        
+
+        {/*invalid file inputted case*/}
         {invalid && (
           <div className="error">
             Sorry, this file format is invalid. Make sure it is a CSV file with columns: date, product, quantity, revenue.
           </div>
         )}
       </div>
-      
+
+      {/*valid file given case*/}
       {!invalid && data.length > 0 && (
         <div>
           {displayData()}
@@ -197,7 +217,11 @@ function App() {
           {displayQuantities()}
         </div>
       )}
+
+      {/*input & file handling*/}
       <input type="file" accept=".csv" onChange={handleFileSelect} className="selector" />
+
+      {/*default message when file upload is valid or no file has been uploaded yet*/}
       {!invalid && (
           <div>
             Please upload a CSV file for new data!

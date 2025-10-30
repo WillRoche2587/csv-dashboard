@@ -52,9 +52,10 @@
 
 .selector {
   font-size: 1rem;
-  background-color: grey;
+  background-color: white;
   padding: 1rem;
   margin: 1rem;
+  color: black;
 }
 
 .selector::file-selector-button {
