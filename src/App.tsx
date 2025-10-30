@@ -3,6 +3,7 @@ import Papa from 'papaparse'
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis} from 'recharts';
 
+//formatting of each data entry
 type SalesData = {
   date: string
   product: string
@@ -22,9 +23,9 @@ function App() {
     //uses papaparse on the given file
     if (file) {
       Papa.parse(file, {
-        //date, product, quantity, and revenue headers from first line
+        //uses first row (date, product, quantity, and revenue) as headers
         header: true,
-        //interprets type from file data
+        //interprets datatype of each cell from file data
         dynamicTyping: true,
         //skips any empty lines
         skipEmptyLines: true,
@@ -65,7 +66,7 @@ function App() {
           //case where file was incorrect, clears data state variable
           if (!isValid) {
           setInvalid(true)
-          setData([]) //
+          setData([])
           return
         }
         //we know parsedData is of form salesdata
@@ -194,7 +195,8 @@ function App() {
 
   return (
     <>
-      <h1>Arpari Parse!</h1>
+      <h1>Arpari-Parse</h1>
+      <p>By William Roche</p>
       <div className="card">
 
         {/*invalid file inputted case*/}
@@ -208,12 +210,13 @@ function App() {
       {/*valid file given case*/}
       {!invalid && data.length > 0 && (
         <div>
+          <h2>Complete Data:</h2>
           {displayData()}
-          <p>Statistics:</p>
+          <h2>Statistics:</h2>
           {displayInfo()}
-          <p>Revenue by Product:</p>
+          <h2>Revenue by Product:</h2>
           {displayRevenues()}
-          <p>Quantity sold by Product:</p>
+          <h2>Quantity sold by Product:</h2>
           {displayQuantities()}
         </div>
       )}
