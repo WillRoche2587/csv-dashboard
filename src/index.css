@@ -1,9 +1,8 @@
 :root {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
 
-  color-scheme: black;
   color: white;
-  background-color: black;
+  background-color: midnightblue;
 }
 
 body {

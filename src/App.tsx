@@ -68,7 +68,7 @@ function App() {
           setData([]) //
           return
         }
-        //we know parsedDate is of form salesdata
+        //we know parsedData is of form salesdata
         //so we can now have it stored as such
         setInvalid(false)
         setData(parsedData as SalesData[])
@@ -149,10 +149,10 @@ function App() {
   //takes the revenue/product objects and displays them using recharts
   function RevenueChart({ data }: { data: { product: string; revenue: number }[] }) {
   return (
-    <BarChart width={500} height={300} data={data}>
+    <BarChart width={1000} height={500} data={data}>
       <XAxis dataKey="product" stroke="white"/>
       <YAxis tickFormatter={v => `$${v}`} stroke="white"/>
-      <Bar dataKey="revenue" fill="green" />
+      <Bar dataKey="revenue" fill="gold" />
     </BarChart>
   )
 }
@@ -184,10 +184,10 @@ function App() {
   //takes the quantities/products and displays them with rechart
   function QuantityChart({ data }: { data: { product: string; quantity: number }[] }) {
     return (
-      <BarChart width={500} height={300} data={data}>
+      <BarChart width={1000} height={500} data={data}>
         <XAxis dataKey="product" stroke="white"/>
         <YAxis stroke="white"/>
-        <Bar dataKey="quantity" fill="green" />
+        <Bar dataKey="quantity" fill="gold" />
       </BarChart>
     )
   }

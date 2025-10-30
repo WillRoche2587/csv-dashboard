@@ -19,27 +19,34 @@
   text-align: center;
   border: 1px solid white;
   padding: 2rem;
+  border-radius: 12px;
 }
 
 .extras p{
   text-align: center;
   border: 1px solid white;
   padding: 2rem;
+  border-radius: 8px;
 }
 
 .revenues{
   text-align: center;
   border: 1px solid white;
+  border-radius: 12px;
+  padding: 1rem;
 }
 
 .quantities{
   text-align: center;
   border: 1px solid white;
+  border-radius: 12px;
+  padding: 1rem;
 }
 
 
 .card {
   text-align: center;
+  border-radius: 12px;
 }
 
 .error {
@@ -56,9 +63,11 @@
   padding: 1rem;
   margin: 1rem;
   color: black;
+  border-radius: 12px;
 }
 
 .selector::file-selector-button {
-  background-color: green;
+  background-color: gold;
   color: black;
+  border-radius: 6px;
 }
